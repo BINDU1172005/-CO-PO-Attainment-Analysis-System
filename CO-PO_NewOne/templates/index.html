@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CO-PO Attainment Calculator</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #0d0f1a;
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .container-lg { max-width: 900px; }
+        .main-header { text-align: center; margin-bottom: 2rem; }
+        .main-header h1 { font-weight: 700; font-size: 2.3rem; }
+        .main-header p { color: #bbb; font-size: 1.1rem; }
+        .main-card {
+            background: #1a1d2e;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(128, 0, 255, 0.2);
+            margin-bottom: 2rem;
+        }
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #b889ff;
+            margin-bottom: 1rem;
+        }
+        .file-input-wrapper { margin-bottom: 1.2rem; }
+        .file-input-wrapper label { font-weight: 600; margin-bottom: 5px; }
+        .helper-text { font-size: 0.85rem; color: #bbb; }
+        .icon-purple { color: #c084fc; }
+        .icon-blue { color: #60a5fa; }
+        .icon-yellow { color: #fbbf24; }
+        .nav-pills-custom .nav-link {
+            background: #292c3f;
+            border-radius: 10px;
+            color: #ddd;
+            font-weight: 600;
+            margin: 5px;
+        }
+        .nav-pills-custom .nav-link.active {
+            background: #7c3aed;
+            color: white;
+            box-shadow: 0px 0px 10px rgba(124, 58, 237, 0.6);
+        }
+        .form-section { padding: 15px; display: none; }
+        .form-section.active { display: block; }
+        .submit-btn {
+            padding: 12px;
+            font-size: 1.2rem;
+            border-radius: 12px;
+        }
+        .submit-btn:hover { background-color: #16a34a !important; }
+        pre {
+            background: #111 !important;
+            color: #fff !important;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .card-body { border-radius: 10px; }
+        
+        /* NEW STYLES for Metadata Form */
+        .metadata-card {
+            background: #292c3f;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .metadata-card .form-control {
+            background: #1a1d2e;
+            border-color: #4a507a;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container container-lg">
+    <div class="main-header">
+        <h1><i class="fas fa-calculator"></i> CO-PO Attainment Calculator</h1>
+        <p>A complete tool for Direct and Indirect Attainment Analysis</p>
+    </div>
+
+    <div class="main-card">
+        <div class="section-title">📊 Calculate CO-PO Attainment</div>
+
+        <!-- NEW: Metadata Form for Sample Downloads -->
+        <div class="metadata-card">
+            <h5 class="text-white mb-3"><i class="fas fa-edit"></i> Sample Metadata</h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="college_name_meta" class="form-label small">College Name (Optional)</label>
+                    <input type="text" class="form-control form-control-sm" id="college_name_meta" placeholder="RVIT" data-storage-key="cn" style="color: Grey;">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="department_name_meta" class="form-label small">Department (Optional)</label>
+                    <input type="text" class="form-control form-control-sm" id="department_name_meta" placeholder="CSE" data-storage-key="dn" style="color: Grey;">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="course_code_meta" class="form-label small">Course Code (Filename)</label>
+                    <input type="text" class="form-control form-control-sm" id="course_code_meta" placeholder="CS82" data-storage-key="cc" style="color: Grey;">
+                </div>
+            </div>
+            <div class="helper-text small mt-0">
+                These values are saved locally and used to personalize template filenames (e.g., CS82_student_data.xlsx).
+            </div>
+        </div>
+
+
+        <form action="/calculate" method="POST" enctype="multipart/form-data">
+            <!-- Add these three hidden fields -->
+            <input type="hidden" name="college_name_calc" id="college_name_calc">
+            <input type="hidden" name="department_name_calc" id="department_name_calc">
+            <input type="hidden" name="course_code_calc" id="course_code_calc">
+
+            <!-- Input method toggle -->
+            <div class="text-center">
+                <ul class="nav nav-pills nav-pills-custom" id="inputMethodTabs">
+                    <li class="nav-item">
+                        <button class="nav-link active" id="upload-tab" type="button">
+                            <i class="fas fa-upload"></i> Upload Files
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="link-tab" type="button">
+                            <i class="fas fa-link"></i> Direct Link
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <input type="hidden" name="input_method" id="input_method" value="upload">
+
+            <!-- Upload section -->
+            <div class="form-section active" id="uploadSection">
+                <!-- Student Data -->
+                <div class="file-input-wrapper">
+                    <label>
+                        <i class="fas fa-file-excel icon-purple"></i> Student Data File (Multi-Sheet)
+                    </label>
+                    <input type="file" class="form-control" name="all_data_file" accept=".xlsx">
+                    <small class="helper-text">
+                        Must contain sheets <code>1_Student_Marks</code> and <code>2_Tool_CO_Mapping</code>
+                    </small>
+
+                    <p class="mt-2">
+                        <a class="btn btn-sm btn-outline-light download-link" data-bs-toggle="collapse" href="#sampleStudent" role="button" aria-expanded="false">
+                            View sample input format
+                        </a>
+                        <!-- MODIFIED: Added class for JS interception -->
+                        <a class="btn btn-sm btn-primary ms-2 download-link" href="/download_sample/student">
+                            <i class="fas fa-download"></i> Download template.xlsx
+                        </a>
+                        <!-- MODIFIED: Added class for JS interception -->
+                        <a class="btn btn-sm btn-secondary ms-2 download-link" href="/download_sample/all">
+                            <i class="fas fa-download"></i> Download all templates (.zip)
+                        </a>
+                    </p>
+
+                    <div class="collapse" id="sampleStudent">
+                        <div class="card card-body bg-dark text-white">
+                            <strong>Sheet: 1_Student_Marks</strong>
+                            <table class="table table-dark table-sm mt-2">
+                                <thead>
+                                <tr>
+                                    <th>USN</th><th>STUDENT NAME</th><th>T1_Q1a_Marks</th><th>SEE_Q1_Marks</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>1RV01</td><td>ABC</td><td>10</td><td>40</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <pre>USN,STUDENT NAME,T1_Q1a_Marks,SEE_Q1_Marks
+1RV01,ABC,10,40</pre>
+                            <hr>
+                            <strong>Sheet: 2_Tool_CO_Mapping</strong>
+                            <table class="table table-dark table-sm mt-2">
+                                <thead>
+                                <tr>
+                                    <th>Tool_Question</th><th>CO</th><th>Max_Marks</th><th>Assessment_Type</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>T1_Q1a</td><td>CO1</td><td>10</td><td>CIE</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <pre>Tool_Question,CO,Max_Marks,Assessment_Type
+T1_Q1a,CO1,10,CIE</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CO-PO Mapping -->
+                <div class="file-input-wrapper">
+                    <label>
+                        <i class="fas fa-file-excel icon-blue"></i> CO-PO Mapping Matrix
+                    </label>
+                    <input type="file" class="form-control" name="co_po_mapping_file" accept=".xlsx">
+                    <p class="mt-2">
+                        <a class="btn btn-sm btn-outline-light download-link" data-bs-toggle="collapse" href="#sampleCoPo">
+                            View sample mapping format
+                        </a>
+                        <!-- MODIFIED: Added class for JS interception -->
+                        <a class="btn btn-sm btn-primary ms-2 download-link" href="/download_sample/copomatrix">
+                            <i class="fas fa-download"></i> Download template.xlsx
+                        </a>
+                    </p>
+
+                    <div class="collapse" id="sampleCoPo">
+                        <div class="card card-body bg-dark text-white">
+                            <table class="table table-dark table-sm">
+                                <thead>
+                                <tr><th>CO</th><th>PO1</th><th>PO2</th><th>PSO1</th></tr>
+                                </thead>
+                                <tbody>
+                                <tr><td>CO1</td><td>3</td><td>1</td><td>0</td></tr>
+                                </tbody>
+                            </table>
+                            <pre>CO,PO1,PO2,PSO1
+CO1,3,1,0</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Survey -->
+                <div class="file-input-wrapper">
+                    <label>
+                        <i class="fas fa-file-excel icon-yellow"></i> Indirect Survey File
+                    </label>
+                    <input type="file" class="form-control" name="survey_file" accept=".xlsx">
+                    <p class="mt-2">
+                        <a class="btn btn-sm btn-outline-light download-link" data-bs-toggle="collapse" href="#sampleSurvey">
+                            View sample survey format
+                        </a>
+                        <!-- MODIFIED: Added class for JS interception -->
+                        <a class="btn btn-sm btn-primary ms-2 download-link" href="/download_sample/survey">
+                            <i class="fas fa-download"></i> Download template.xlsx
+                        </a>
+                    </p>
+
+                    <div class="collapse" id="sampleSurvey">
+                        <div class="card card-body bg-dark text-white">
+                            <table class="table table-dark table-sm">
+                                <thead><tr><th>USN</th><th>CO1_Rating</th><th>CO2_Rating</th></tr></thead>
+                                <tbody><tr><td>1RV01</td><td>2</td><td>3</td></tr></tbody>
+                            </table>
+                            <pre>USN,CO1_Rating,CO2_Rating
+1RV01,2,3</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Link section -->
+            <div class="form-section" id="linkSection">
+                <div class="alert alert-info">
+                    Must be a direct download link to the file (.xlsx).
+                </div>
+                <label class="form-label">Student Data File URL</label>
+                <input type="url" class="form-control mb-3" name="all_data_url" placeholder="https://.../student_data.xlsx">
+                <label class="form-label">CO-PO Mapping URL</label>
+                <input type="url" class="form-control mb-3" name="co_po_mapping_url" placeholder="https://.../co_po_mapping.xlsx">
+                <label class="form-label">Survey Data URL</label>
+                <input type="url" class="form-control mb-3" name="survey_url" placeholder="https://.../survey.xlsx">
+            </div>
+
+            <!-- Config panel -->
+            <div class="section-title">⚙️ Custom Configuration (optional)</div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Attainment thresholds (%)</label>
+                <div class="input-group">
+                  <span class="input-group-text">Level3</span>
+                  <input type="number" step="1" min="0" max="100" class="form-control" name="level3_pct" value="70">
+                  <span class="input-group-text">Level2</span>
+                  <input type="number" step="1" min="0" max="100" class="form-control" name="level2_pct" value="55">
+                  <span class="input-group-text">Level1</span>
+                  <input type="number" step="1" min="0" max="100" class="form-control" name="level1_pct" value="40">
+                </div>
+                <div class="helper-text">Percent cutoffs for levels 3, 2, 1 (suggested: 70, 55, 40).</div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label">CIE / SEE weights</label>
+                <div class="input-group">
+                  <span class="input-group-text">CIE</span>
+                  <input type="number" step="any" min="0" class="form-control" name="cie_weight" value="60">
+                  <span class="input-group-text">SEE</span>
+                  <input type="number" step="any" min="0" class="form-control" name="see_weight" value="40">
+                </div>
+                <div class="helper-text">Relative weights for internal vs external (normalized automatically).</div>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Direct vs Indirect weight</label>
+                <div class="input-group">
+                  <span class="input-group-text">Direct</span>
+                  <input type="number" step="any" min="0" class="form-control" name="direct_weight" value="0.8">
+                  <span class="input-group-text">Indirect</span>
+                  <input type="number" step="any" min="0" class="form-control" name="indirect_weight" value="0.2">
+                </div>
+                <div class="helper-text">Relative weights; e.g., 0.8 & 0.2 or 80 & 20.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Tool threshold (%)</label>
+                <input type="number" class="form-control" name="threshold" value="60" min="0" max="100">
+                <div class="helper-text">Percentage of max marks to treat a student as having met the tool.</div>
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-success submit-btn w-100">
+                    Calculate Attainment <i class="fas fa-rocket"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    
+// Add this logic to the bottom of your <script> block in index.html
+
+const calcForm = document.querySelector('form[action="/calculate"]');
+const collegeCalc = document.getElementById('college_name_calc');
+const deptCalc = document.getElementById('department_name_calc');
+const courseCalc = document.getElementById('course_code_calc');
+
+// This listener is CRITICAL: it ensures metadata is sent on CALCULATE click
+calcForm.addEventListener('submit', function() {
+    // Populate the hidden fields from localStorage before the form submits
+    // The keys 'meta_cn', 'meta_dn', 'meta_cc' were saved by the input listener.
+    collegeCalc.value = localStorage.getItem('meta_cn') || 'College Name';
+    deptCalc.value = localStorage.getItem('meta_dn') || 'Department Name';
+    courseCalc.value = localStorage.getItem('meta_cc') || 'Course Code';
+});
+    // --- CALCULATION FORM LOGIC (Unchanged) ---
+    document.getElementById("upload-tab").addEventListener('click', function() {
+        document.getElementById("input_method").value = "upload";
+        document.getElementById("uploadSection").classList.add("active");
+        document.getElementById("linkSection").classList.remove("active");
+    });
+    document.getElementById("link-tab").addEventListener('click', function() {
+        document.getElementById("input_method").value = "link";
+        document.getElementById("uploadSection").classList.remove("active");
+        document.getElementById("linkSection").classList.add("active");
+    });
+
+
+    // --- NEW METADATA STORAGE & DOWNLOAD INTERCEPTION LOGIC ---
+    
+    const metaInputs = document.querySelectorAll('.metadata-card input');
+    const downloadLinks = document.querySelectorAll('.download-link[href^="/download_sample"]');
+
+    function loadMetadata() {
+        metaInputs.forEach(input => {
+            const key = input.dataset.storageKey;
+            if (key) {
+                input.value = localStorage.getItem('meta_' + key) || input.placeholder;
+            }
+        });
+    }
+
+    function saveMetadata(input) {
+        const key = input.dataset.storageKey;
+        if (key) {
+            localStorage.setItem('meta_' + key, input.value.trim());
+        }
+    }
+
+    function interceptDownload(event) {
+        // Prevent default navigation to allow time to modify the URL
+        event.preventDefault();
+        
+        const link = event.currentTarget;
+        const cc = localStorage.getItem('meta_cc') || 'sample';
+        const cn = localStorage.getItem('meta_cn') || 'Sample College';
+        const dn = localStorage.getItem('meta_dn') || 'Sample Dept';
+
+        // Construct the query string
+        const queryString = `?cc=${encodeURIComponent(cc)}&cn=${encodeURIComponent(cn)}&dn=${encodeURIComponent(dn)}`;
+        
+        // Build the new URL
+        const newUrl = link.href.split('?')[0] + queryString;
+
+        // Perform the download redirect
+        window.location.href = newUrl;
+    }
+
+    // Initialize: Load saved values when the page loads
+    loadMetadata();
+
+    // Event Listeners for Saving Metadata
+    metaInputs.forEach(input => {
+        input.addEventListener('input', () => saveMetadata(input));
+    });
+
+    // Event Listeners for Intercepting Downloads
+    downloadLinks.forEach(link => {
+        link.addEventListener('click', interceptDownload);
+    });
+
+</script>
+
+</body>
+</html>
