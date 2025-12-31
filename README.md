@@ -136,9 +136,9 @@ Final PO / PSO Attainment
 Downloadable Excel Report (.xlsx)
 
 ▶️ How to Run the Project
+
 pip install flask pandas numpy openpyxl
 python app.py
-
 
 Open:
 
