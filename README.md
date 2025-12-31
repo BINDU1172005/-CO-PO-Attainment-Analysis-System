@@ -95,17 +95,17 @@ Visualization: Chart.js
 
 📂 Project Structure
 ├── app.py
-│
+
 ├── templates/
-│
+
 │   ├── index.html
-│
+
 │   ├── results.html
-│
+
 │   └── error.html
-│
+
 ├── requirements.txt
-│
+
 └── README.md
 
 📥 Input Files
