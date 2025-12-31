@@ -1,169 +1,85 @@
-📊 CO–PO Attainment Analysis System
+# 📊 CO–PO Attainment Analysis System
 
-Automated Outcome-Based Education Evaluation Tool
+Automated CO–PO Attainment Analysis System using Flask and Python for Outcome-Based Education (OBE).
 
-A web-based application that automates Course Outcome (CO) and Program Outcome (PO/PSO) attainment calculations as per Outcome-Based Education (OBE) standards.
-The system processes academic data, applies configurable evaluation logic, and generates visual reports and Excel outputs for accreditation and academic analysis.
+---
 
-🎓 Project Type: Final Year Engineering Project
-🏫 Domain: Outcome-Based Education (OBE), Data Analytics, Web Application
-🛠️ Stack: Python, Flask, Pandas, OpenPyXL
+## 📌 Project Overview
 
-🔍 About the Project
+Outcome-Based Education (OBE) requires systematic evaluation of Course Outcomes (CO) and Program Outcomes (PO).  
+Manual CO–PO attainment calculations are time-consuming and prone to errors.
 
-In Outcome-Based Education, evaluating CO and PO attainment manually is time-consuming, repetitive, and error-prone.
-This project addresses the problem by providing a fully automated, configurable, and user-friendly system to calculate:
+This project provides a web-based solution to automate:
+- Direct CO Attainment
+- Indirect CO Attainment
+- Final CO Attainment
+- PO / PSO Attainment
 
-Direct CO Attainment (CIE + SEE)
+The system generates tabular results, charts, and downloadable Excel reports for academic analysis and accreditation.
 
-Indirect CO Attainment (Student Surveys)
+---
 
-Final CO Attainment
+## 🎯 Objectives
 
-Final PO / PSO Attainment
+- Automate CO–PO attainment calculations  
+- Reduce manual errors in OBE evaluation  
+- Support configurable thresholds and weightages  
+- Generate Excel reports with charts  
+- Provide a user-friendly web interface  
 
-The system also generates professionally formatted Excel reports with charts, making it suitable for NBA / NAAC accreditation and internal academic reviews.
+---
 
-🎯 Objectives
+## ✨ Key Features
 
-Automate CO–PO attainment calculations
+- Upload Excel files or provide direct file links  
+- Configurable attainment thresholds (Level 3 / 2 / 1)  
+- Adjustable CIE–SEE and Direct–Indirect weights  
+- Automatic chart generation  
+- Downloadable Excel report (.xlsx)  
+- Sample input template generator  
+- Error handling and validation  
 
-Minimize manual errors in OBE analysis
+---
 
-Support customizable thresholds and weightages
+## 🧠 Attainment Methodology
 
-Provide visual and downloadable reports
-
-Simplify data handling using Excel inputs
-
-✨ Key Features
-
-📥 Upload Excel files or use direct file links
-
-⚙️ Configurable attainment thresholds (Level 3 / 2 / 1)
-
-⚖️ Adjustable CIE–SEE and Direct–Indirect weights
-
-📊 Automatic bar-chart generation
-
-📄 Downloadable Excel report with multiple sheets
-
-🧪 Sample template generator for easy input formatting
-
-🚫 Robust error handling and validation
-
-🧠 Attainment Methodology
-1️⃣ Direct CO Attainment
-
+### Direct CO Attainment
 Calculated using student performance in:
+- Continuous Internal Evaluation (CIE)
+- Semester End Examination (SEE)
 
-Continuous Internal Evaluation (CIE)
+Default weightage:
+- 60% CIE
+- 40% SEE
 
-Semester End Examination (SEE)
+---
 
-Weighted average:
+### Indirect CO Attainment
+Calculated using student feedback surveys on a 1–3 rating scale.
 
-Default: 60% CIE + 40% SEE
+---
 
-2️⃣ Indirect CO Attainment
+### Final CO Attainment
+Computed as a weighted average of:
+- Direct CO Attainment (80%)
+- Indirect CO Attainment (20%)
 
-Derived from student feedback surveys using a 1–3 rating scale.
+---
 
-3️⃣ Final CO Attainment
+### PO / PSO Attainment
+Derived using the CO–PO / CO–PSO mapping matrix and final CO attainment values.
 
-Weighted combination of:
+---
 
-Direct CO Attainment (default: 80%)
+## 🧰 Technology Stack
 
-Indirect CO Attainment (default: 20%)
+- Backend: Python, Flask  
+- Frontend: HTML, Bootstrap, JavaScript  
+- Data Processing: Pandas, NumPy  
+- Excel Automation: OpenPyXL  
+- Visualization: Chart.js  
 
-4️⃣ PO / PSO Attainment
+---
 
-Computed using CO–PO / CO–PSO mapping matrix and final CO attainment values.
+## 📂 Project Structure
 
-🧰 Technology Stack
-
-Backend: Python, Flask
-
-Frontend: HTML5, Bootstrap 5, JavaScript
-
-Data Processing: Pandas, NumPy
-
-Excel Automation: OpenPyXL
-
-Visualization: Chart.js
-
-📂 Project Structure
-
-
-├── app.py
-├── templates/
-│   ├── index.html
-│   ├── results.html
-│   └── error.html
-├── requirements.txt
-└── README.md
-
-
-📥 Input Files
-Student Data File (Excel)
-
-1_Student_Marks
-
-2_Tool_CO_Mapping
-
-CO–PO Mapping File
-
-CO vs PO/PSO mapping (0–3 scale)
-
-Survey File
-
-Student ratings for each CO
-
-📤 Output
-
-Direct CO Attainment (Table + Chart)
-
-Indirect CO Attainment (Table + Chart)
-
-Final CO Attainment
-
-Final PO / PSO Attainment
-
-Downloadable Excel Report (.xlsx)
-
-▶️ How to Run the Project
-
-pip install flask pandas numpy openpyxl
-python app.py
-
-Open:
-
-http://127.0.0.1:5000/
-
-🎓 Applications
-
-Engineering Colleges
-
-NBA / NAAC Accreditation
-
-Academic Outcome Analysis
-
-Faculty Performance Review
-
-🚀 Future Enhancements
-
-Role-based authentication
-
-PDF report generation
-
-Cloud deployment
-
-Historical attainment tracking
-
-Dashboard analytics
-
-🏁 Conclusion
-
-The CO–PO Attainment Analysis System simplifies and standardizes OBE evaluation by automating complex calculations and report generation.
-It provides a scalable, accurate, and efficient solution for academic institutions to analyze and improve learning outcomes.
