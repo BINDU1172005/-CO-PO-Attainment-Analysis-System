@@ -99,7 +99,6 @@ Visualization: Chart.js
 │   ├── index.html
 │   ├── results.html
 │   └── error.html
-├── static/
 ├── requirements.txt
 └── README.md
 
